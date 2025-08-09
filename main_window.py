@@ -2,8 +2,8 @@ import tkinter as tk
 import tkinter.font as tk_font
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-from fish import Fish, fish_event
-from title_bar import TitleBar
+from modules.fish import Fish
+from widgets.title_bar import TitleBar
 
 class MainPage(ttk.Frame):
     def __init__(self, master=None, parent=None):
@@ -13,7 +13,7 @@ class MainPage(ttk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.title_bar = TitleBar(self.master, container=self, close_callback=self.on_close)
+        self.title_bar = TitleBar(self.master, container=self)
         self.title_bar.pack(fill='x', expand=NO)
 
         self.form_widgets = ttk.Frame(self)
@@ -26,11 +26,11 @@ class MainPage(ttk.Frame):
         server_label = ttk.Label(server_frame, text="服务器：")
         server_label.pack(side=LEFT)
         
-        self.server_var = tk.StringVar(value="台服")
-        taiwan_radio = ttk.Radiobutton(server_frame, text="台服", variable=self.server_var, value="台服")
+        self.server_var = tk.StringVar(value="tw")
+        taiwan_radio = ttk.Radiobutton(server_frame, text="台服", variable=self.server_var, value="tw")
         taiwan_radio.pack(side=LEFT, padx=(10, 5))
         
-        us_radio = ttk.Radiobutton(server_frame, text="美服", variable=self.server_var, value="美服")
+        us_radio = ttk.Radiobutton(server_frame, text="美服", variable=self.server_var, value="na")
         us_radio.pack(side=LEFT, padx=(5, 0))
         
         # 控制按钮

@@ -2,12 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttk
 from PIL import ImageTk, Image
 from ttkbootstrap.constants import *
-import os
-
-def root_path():
-    current_path = os.path.dirname(os.path.abspath(__file__))
-    root_path = os.path.dirname(current_path)
-    return root_path
+from utils.path import root_path
 
 class TitleBar(tk.Frame):
     def __init__(self, master=None, container=None, close_callback=None):
@@ -21,8 +16,8 @@ class TitleBar(tk.Frame):
         self.title_bar = ttk.Frame(self.container) 
         self.title_bar.pack(fill="x", anchor="center", padx=12, pady=12) 
         path = root_path()
-        logo_icon = Image.open(f"{path}/bdo-fish/images/logo.ico")
-        close_icon = Image.open(f"{path}/bdo-fish/images/close.png")
+        logo_icon = Image.open(f"{path}/assets/logo.ico")
+        close_icon = Image.open(f"{path}/assets/close.png")
         icon_size = (16,16)  
         logo_icon_resized = logo_icon.resize(icon_size, Image.LANCZOS)
         close_icon_resized = close_icon.resize(icon_size, Image.LANCZOS)
@@ -80,7 +75,6 @@ class TitleBar(tk.Frame):
         if self.close_callback is not None:
             self.close_callback()
             return
-
-        print(self.master)
+            
         self.master.destroy()
         self.master.quit()
