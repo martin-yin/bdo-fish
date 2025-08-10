@@ -1,4 +1,4 @@
-from cv2 import cvtColor, COLOR_BGR2GRAY, TM_CCOEFF_NORMED, matchTemplate, inRange, countNonZero
+from cv2 import cvtColor, COLOR_BGR2GRAY, TM_CCOEFF_NORMED, matchTemplate, inRange, countNonZero, COLOR_BGR2HSV
 import numpy as np
 from typing import List, Tuple, Dict, Optional
 import os

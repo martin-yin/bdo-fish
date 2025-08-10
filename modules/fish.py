@@ -7,7 +7,7 @@ import mss
 from modules.fish_config import load_fish_config, load_templates
 from utils import hsv_color_match, match_key_list, match_template_multi
 import keyboard
-from cv2 import cvtColor, TM_CCOEFF_NORMED, matchTemplate, inRange, countNonZero, COLOR_RGB2BGR
+from cv2 import cvtColor, TM_CCOEFF_NORMED, matchTemplate, inRange, countNonZero, COLOR_RGB2BGR, COLOR_RGB2HSV
 
 class Fish:
     def __init__(self, server):
