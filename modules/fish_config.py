@@ -5,54 +5,54 @@ from utils import root_path
 # 钓鱼配置相关的文件
 def load_fish_config(server: str):
     fish_config = {
-        "tw": {
-            "monitoring": {
-                "left": 1640,
-                "top": 442,
-                "width": 560,
-                "height": 50
+       "tw": {
+                "monitoring": {
+                "left": 730,
+                "top": 48,
+                "width": 430,
+                "height": 42
             },
             "blue_qte": {
-                "left": 1998,
-                "top": 880,
-                "width": 172,  
-                "height": 22   
+                "left": 1014,
+                "top": 378,
+                "width": 134,  
+                "height": 17   
             },
             "key_qte": {
-                "left": 1678,
-                "top": 790,
-                "width": 502,
-                "height": 120
+                "left": 740,
+                "top": 340,
+                "width": 436,
+                "height": 70
             },
             "fish_point": {
-                "left": 2564,
-                "top": 1106,
+                "left": 1411,
+                "top": 628,
                 "width": 1,
                 "height": 1
             },
         },
         "na": {
-            "monitoring": {
-                "left": 1640,
-                "top": 442,
-                "width": 560,
-                "height": 50
+                "monitoring": {
+                "left": 730,
+                "top": 48,
+                "width": 430,
+                "height": 42
             },
             "blue_qte": {
-                "left": 1998,
-                "top": 880,
-                "width": 172,  
-                "height": 22   
+                "left": 1014,
+                "top": 378,
+                "width": 134,  
+                "height": 17   
             },
             "key_qte": {
-                "left": 1678,
-                "top": 790,
-                "width": 502,
-                "height": 120
+                "left": 740,
+                "top": 340,
+                "width": 436,
+                "height": 70
             },
             "fish_point": {
-                "left": 2564,
-                "top": 1106,
+                "left": 1411,
+                "top": 628,
                 "width": 1,
                 "height": 1
             },

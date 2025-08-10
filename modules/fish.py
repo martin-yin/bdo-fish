@@ -159,8 +159,6 @@ class Fish:
             if fishing_image is None:
                 time.sleep(0.1)
                 return "continue"
-            # 蓝色的 qte 检测
-            # blue_detected = hsv_color_match(fishing_image, np.array([100, 50, 50]), np.array([130, 255, 255]))
             blue_detected = hsv_color_match(fishing_image, np.array([100, 130, 130]), np.array([110, 255, 255]))
             print(f"蓝色检测结果: {blue_detected}")
             if blue_detected: 
