@@ -1,4 +1,4 @@
-import cv2
+from cv2 import cvtColor, COLOR_BGR2GRAY, TM_CCOEFF_NORMED, matchTemplate, inRange, countNonZero
 import numpy as np
 from typing import List, Tuple, Dict, Optional
 import os
@@ -25,16 +25,16 @@ def match_template(image: np.ndarray, template: np.ndarray, threshold: float = 0
         return []
     
     if len(image.shape) == 3:
-        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        image_gray = cvtColor(image, COLOR_BGR2GRAY)
     else:
         image_gray = image
         
     if len(template.shape) == 3:
-        template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+        template_gray = cvtColor(template, COLOR_BGR2GRAY)
     else:
         template_gray = template
     
-    result = cv2.matchTemplate(image_gray, template_gray, cv2.TM_CCOEFF_NORMED)
+    result = matchTemplate(image_gray, template_gray, TM_CCOEFF_NORMED)
     
     locations = np.where(result >= threshold)
     matches = []
@@ -116,10 +116,10 @@ def hsv_color_match(image: np.ndarray, lower_hsv: np.ndarray, upper_hsv: np.ndar
     :param threshold: 匹配阈值
     :return: 匹配结果列表 [(x, y, confidence), ...]
     """
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
+    hsv = cvtColor(image, COLOR_BGR2HSV)
+    mask = inRange(hsv, lower_hsv, upper_hsv)
 
-    hsv_pixels = cv2.countNonZero(mask)
+    hsv_pixels = countNonZero(mask)
     total_pixels = image.shape[0] * image.shape[1]
     hsv_ratio = hsv_pixels / total_pixels
     print(f"HSV颜色匹配比例: {hsv_ratio}")

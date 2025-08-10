@@ -209,4 +209,4 @@ __marimo__/
 
 main_window.dist
 main_window.build
-main_window.exe
+main_window.onefile-build

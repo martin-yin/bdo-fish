@@ -1,5 +1,5 @@
 import os
-import cv2
+from cv2 import imread, COLOR_BGR2GRAY
 from utils import root_path
 
 # 钓鱼配置相关的文件
@@ -69,7 +69,7 @@ def load_templates(server, type):
     for file in os.listdir(template_dir):
         if file.lower().endswith('.png'):
             template_path = os.path.join(template_dir, file)
-            template = cv2.imread(template_path, cv2.COLOR_BGR2GRAY)
+            template = imread(template_path, COLOR_BGR2GRAY)
             if template is not None:
                 # 去掉文件扩展名作为键名
                 key_name = os.path.splitext(file)[0]

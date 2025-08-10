@@ -16,15 +16,26 @@ class TitleBar(tk.Frame):
         self.title_bar = ttk.Frame(self.container) 
         self.title_bar.pack(fill="x", anchor="center", padx=12, pady=12) 
         path = root_path()
+        logo_icon = Image.open(f"{path}/assets/logo.ico")
         close_icon = Image.open(f"{path}/assets/close.png")
         icon_size = (16,16)  
+        logo_icon_resized = logo_icon.resize(icon_size, Image.LANCZOS)
         close_icon_resized = close_icon.resize(icon_size, Image.LANCZOS)
 
+        self.logo_icon_photo = ImageTk.PhotoImage(logo_icon_resized)
         self.close_icon_photo = ImageTk.PhotoImage(close_icon_resized)
+
+ 
+        self.logo_label = ttk.Label(
+            self.title_bar,
+            image=self.logo_icon_photo,
+        )
+        # 为 logo 绑定拖拽事件
+        self.logo_label.bind('<Button-1>', self.clickwin)
+        self.logo_label.bind('<B1-Motion>', self.dragwin)
 
         self.title_bar.bind('<Button-1>', self.clickwin)
         self.title_bar.bind('<B1-Motion>', self.dragwin)
-
         self.title_label = ttk.Label(
             self.title_bar,
             text="钓鱼助手",
@@ -39,7 +50,8 @@ class TitleBar(tk.Frame):
         )
         self.close_label.bind('<Button-1>', self.on_close_click)
 
-        self.title_label.pack(side=LEFT, padx=(0, 0), pady=0)
+        self.logo_label.pack(side=LEFT, padx=(0, 0), pady=0)
+        self.title_label.pack(side=LEFT, padx=(4, 0), pady=0)
         self.close_label.pack(side=RIGHT, padx=(0), pady=0)
 
         spacer = ttk.Frame(self.title_bar)

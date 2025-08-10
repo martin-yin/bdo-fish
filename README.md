@@ -16,3 +16,9 @@ pip install -r requirements.txt
 ## 运行
 
 python main_window.py
+
+# build
+
+
+
+nuitka --standalone --onefile --windows-uac-admin  --windows-console-mode=disable --plugin-enable=tk-inter --windows-console-mode=disable ./main_window.py --output-filename=钓鱼助手  --include-data-dir=./assets=assets --windows-icon-from-ico=./assets/logo.ico

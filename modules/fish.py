@@ -7,7 +7,7 @@ import mss
 from modules.fish_config import load_fish_config, load_templates
 from utils import hsv_color_match, match_key_list, match_template_multi
 import keyboard
-import cv2
+from cv2 import cvtColor, TM_CCOEFF_NORMED, matchTemplate, inRange, countNonZero, COLOR_RGB2BGR
 
 class Fish:
     def __init__(self, server):
@@ -54,7 +54,7 @@ class Fish:
                 img = Image.frombytes("RGB", screenshot.size, screenshot.bgra, "raw", "BGRX")
                 
                 img_array = np.array(img)
-                img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+                img_bgr = cvtColor(img_array, COLOR_RGB2BGR)
                 return img_bgr
             
         except Exception as e:
@@ -83,7 +83,7 @@ class Fish:
             
         # 将RGB转换为HSV
         rgb_pixel = np.uint8([[pixel_rgb]])
-        hsv_pixel = cv2.cvtColor(rgb_pixel, cv2.COLOR_RGB2HSV)[0][0]
+        hsv_pixel = cvtColor(rgb_pixel, COLOR_RGB2HSV)[0][0]
         
         # 绿色鱼的HSV范围
         green_lower = np.array([40, 90, 90])
@@ -94,12 +94,12 @@ class Fish:
         blue_upper = np.array([110, 255, 255])
         
         # 检测是否在绿色范围内
-        if cv2.inRange(np.array([[hsv_pixel]]), green_lower, green_upper)[0][0] > 0:
+        if inRange(np.array([[hsv_pixel]]), green_lower, green_upper)[0][0] > 0:
             print(f"检测到绿色鱼 - HSV值: {hsv_pixel}")
             return "green"
         
         # 检测是否在蓝色范围内
-        if cv2.inRange(np.array([[hsv_pixel]]), blue_lower, blue_upper)[0][0] > 0:
+        if inRange(np.array([[hsv_pixel]]), blue_lower, blue_upper)[0][0] > 0:
             print(f"检测到蓝色鱼 - HSV值: {hsv_pixel}")
             return "blue"
         
