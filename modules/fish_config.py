@@ -6,7 +6,7 @@ from utils import root_path
 def load_fish_config(server: str):
     fish_config = {
        "tw": {
-                "monitoring": {
+           "monitoring": {
                 "left": 730,
                 "top": 48,
                 "width": 430,

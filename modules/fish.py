@@ -129,7 +129,6 @@ class Fish:
             time.sleep(1)
             return "continue"
         (status, _, confidence) = match_template_multi(status_image, self.monitoring_templates)
-
         if status == "find_some_one":
             print("检测到find_some_one状态，按下空格键进入拉扯状态")
             keyboard.press_and_release('space')
