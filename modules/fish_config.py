@@ -26,7 +26,7 @@ def load_fish_config(server: str):
             },
             "fish_point": {
                 "left": 1411,
-                "top": 628,
+                "top": 511,
                 "width": 1,
                 "height": 1
             },
@@ -52,7 +52,7 @@ def load_fish_config(server: str):
             },
             "fish_point": {
                 "left": 1411,
-                "top": 628,
+                "top": 511,
                 "width": 1,
                 "height": 1
             },

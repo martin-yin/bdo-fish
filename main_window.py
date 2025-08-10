@@ -4,7 +4,6 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from modules.fish import Fish
 from widgets.title_bar import TitleBar
-import keyboard
 
 class MainPage(ttk.Frame):
     def __init__(self, master=None, parent=None):
@@ -42,10 +41,6 @@ class MainPage(ttk.Frame):
         # 初始化钓鱼对象
         self.fish = None
         self.is_fishing = False
-        
-        # 绑定全局Home键热键
-        keyboard.add_hotkey('home', self.bring_to_front)
-        print("已绑定全局Home键热键，按下Home键可将窗口置于最前")
     
     def toggle_fishing(self):
         """切换钓鱼状态"""
@@ -84,21 +79,12 @@ class MainPage(ttk.Frame):
                 self.status_display.config(foreground="red")
             # 每秒检查一次状态
             self.master.after(1000, self.check_status)
-    
-    def bring_to_front(self, event=None):
-        """将窗口设置为最前置"""
-        self.master.attributes('-topmost', False)
-        self.master.attributes('-topmost', True)
-        self.master.lift()
-        self.master.focus_force()
-        print("窗口已设置为最前置")
+
     
     def on_close(self):
         """关闭窗口时的清理工作"""
         if self.fish and self.is_fishing:
             self.fish.stop()
-        # 清理全局热键
-        keyboard.clear_all_hotkeys()
         self.master.destroy()
         self.master.quit()
 

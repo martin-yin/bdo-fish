@@ -141,8 +141,8 @@ class Fish:
         if status == "start":
             print("检测到start状态，按下空格键开始钓鱼")
             keyboard.press_and_release('space')
-            print("等待10秒进入检测状态……")
-            time.sleep(10)
+            print("等待2秒进入检测状态……")
+            time.sleep(2)
             return "continue"
 
 
