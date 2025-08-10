@@ -24,6 +24,12 @@ def load_fish_config(server: str):
                 "width": 502,
                 "height": 120
             },
+            "fish_point": {
+                "left": 2564,
+                "top": 1106,
+                "width": 1,
+                "height": 1
+            },
         },
         "na": {
             "monitoring": {
@@ -43,6 +49,12 @@ def load_fish_config(server: str):
                 "top": 790,
                 "width": 502,
                 "height": 120
+            },
+            "fish_point": {
+                "left": 2564,
+                "top": 1106,
+                "width": 1,
+                "height": 1
             },
         }
     }

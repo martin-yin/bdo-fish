@@ -65,14 +65,7 @@ class Fish:
         """捕获鱼点像素并返回RGB颜色值"""
         try:
             with mss.mss() as sct:
-                monitor = {
-                    "left": 2564,
-                    "top": 1106,
-                    "width": 1,
-                    "height": 1
-                }
-
-                screenshot = sct.grab(monitor)
+                screenshot = sct.grab(self.regions["fish_point"])
                 img = Image.frombytes('RGB', screenshot.size, screenshot.bgra, 'raw', 'BGRX')
                 img_array = np.array(img)
                 # 获取像素的RGB值 (取第一个像素，因为只截取了1x1的区域)
@@ -110,8 +103,7 @@ class Fish:
             print(f"检测到蓝色鱼 - HSV值: {hsv_pixel}")
             return "blue"
         
-        print(f"未检测到目标颜色鱼 - HSV值: {hsv_pixel}")
-        return "unknown"
+        return "other"
 
     def _run(self):
         """钓鱼主循环"""
@@ -211,7 +203,7 @@ class Fish:
         fish_point_pixel = self.capture_fish_point_pixel()
         fish_color = self.check_fish_color(fish_point_pixel)
         
-        if fish_color != "green" or  fish_color != "blue":
+        if fish_color == "other":
             keyboard.press_and_release('r')
             print("按下R键")
             self.current_state = "monitoring"
