@@ -17,7 +17,7 @@ class MainPage(ttk.Frame):
         self.title_bar.pack(fill='x', expand=NO)
 
         self.form_widgets = ttk.Frame(self)
-        self.form_widgets.pack(fill=BOTH, expand=YES, padx=12, pady=10)
+        self.form_widgets.pack(fill=BOTH, expand=YES, padx=12, pady=(0, 10))
         
         # 服务器选择区域
         server_frame = ttk.Frame(self.form_widgets)
@@ -36,7 +36,7 @@ class MainPage(ttk.Frame):
         # 控制按钮
         self.control_button = ttk.Button(self.form_widgets, text="开始钓鱼", 
                                         command=self.toggle_fishing, style="success.TButton")
-        self.control_button.pack(fill=X, pady=(5, 0), ipady=5)
+        self.control_button.pack(fill=X, pady=(0, 0), ipady=0)
         
         # 初始化钓鱼对象
         self.fish = None

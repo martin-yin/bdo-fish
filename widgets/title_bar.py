@@ -38,8 +38,6 @@ class TitleBar(tk.Frame):
         self.title_label = ttk.Label(
             self.title_bar,
             text="钓鱼助手",
-            font=('微软雅黑'), 
-            anchor=tk.CENTER
         )
         # 为标题文字绑定拖拽事件
         self.title_label.bind('<Button-1>', self.clickwin)
