@@ -65,29 +65,18 @@ class Fish:
         """捕获鱼点像素并返回RGB颜色值"""
         try:
             with mss.mss() as sct:
-                # left 2569 top 1112 width 1 height 1
                 monitor = {
-                    "left": 2569,
-                    "top": 1112,
+                    "left": 2564,
+                    "top": 1106,
                     "width": 1,
                     "height": 1
                 }
 
                 screenshot = sct.grab(monitor)
-                
-                # 将 ScreenShot 对象转换为 numpy 数组
                 img = Image.frombytes('RGB', screenshot.size, screenshot.bgra, 'raw', 'BGRX')
                 img_array = np.array(img)
-                
                 # 获取像素的RGB值 (取第一个像素，因为只截取了1x1的区域)
-                pixel_rgb = img_array[0, 0]  # 返回 [R, G, B]
-                print(f"捕获的鱼点像素RGB值: {pixel_rgb}")
-                
-                # 保存鱼点像素截图
-                filename = f"fish_point_{time.time()}.png"
-                cv2.imwrite(filename, cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR))
-                print(f"鱼点像素截图已保存: {filename}")
-                
+                pixel_rgb = img_array[0, 0]
                 return pixel_rgb
                 
         except Exception as e:
@@ -222,13 +211,8 @@ class Fish:
         fish_point_pixel = self.capture_fish_point_pixel()
         fish_color = self.check_fish_color(fish_point_pixel)
         
-        if fish_color == "green":
-            print("检测到绿色鱼！")
-        elif fish_color == "blue":
-            print("检测到蓝色鱼！")
-        else:
-            print("未检测到目标颜色的鱼")
-        keyboard.press_and_release('r')
-        print("按下R键")
-        self.current_state = "monitoring"
+        if fish_color != "green" or  fish_color != "blue":
+            keyboard.press_and_release('r')
+            print("按下R键")
+            self.current_state = "monitoring"
         return "continue"
