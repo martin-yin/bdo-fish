@@ -1,6 +1,6 @@
 import os
 import cv2
-from utils.path import root_path
+from utils import root_path
 
 # 钓鱼配置相关的文件
 def load_fish_config(server: str):
@@ -48,18 +48,21 @@ def load_fish_config(server: str):
     }
     return fish_config[server]
 
-def load_templates(server):
-    template_dir = f"{root_path()}/assets/fish_icons/{server}"
+def load_templates(server, type):
+    template_dir = f"{root_path()}/assets/fish_icons/{server}/{type}"
     templates = {}
         
     # 获取目录中的所有PNG文件
+    print(os.listdir(template_dir))
     for file in os.listdir(template_dir):
         if file.lower().endswith('.png'):
             template_path = os.path.join(template_dir, file)
             template = cv2.imread(template_path, cv2.COLOR_BGR2GRAY)
             if template is not None:
-                templates[file] = template
-                print(f"已加载状态模板: {file}, 尺寸: {template.shape}")
+                # 去掉文件扩展名作为键名
+                key_name = os.path.splitext(file)[0]
+                templates[key_name] = template
+                print(f"已加载状态模板: {key_name}, 尺寸: {template.shape}")
             else:
                 print(f"警告: 无法读取模板 {file}")
                 

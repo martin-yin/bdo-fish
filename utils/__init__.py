@@ -1,6 +1,13 @@
 import cv2
 import numpy as np
 from typing import List, Tuple, Dict, Optional
+import os
+
+def root_path():
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    root_path = os.path.dirname(current_path)
+    return root_path
+
 
 # 单图匹配
 def match_template(image: np.ndarray, template: np.ndarray, threshold: float = 0.8) -> List[Tuple[int, int, float]]:
@@ -49,14 +56,14 @@ def match_template_multi(image: np.ndarray, templates: Dict[str, np.ndarray], th
     :param threshold: 匹配阈值
     :return: 匹配结果 (name, [(x, y, confidence), ...])
     """
-    best_match = (None, None)
+    best_match = (None, None, None)
     best_confidence = 0
     
     for name, template in templates.items():
         matches = match_template(image, template, threshold)
         if matches and matches[0][2] > best_confidence:
             best_confidence = matches[0][2]
-            best_match = (name, matches)
+            best_match = (name, matches, best_confidence)
     
     return best_match
 
@@ -86,17 +93,18 @@ def match_key_list(image: np.ndarray, key_templates: Dict[str, np.ndarray], thre
         # 检查是否与已有匹配过于接近
         is_duplicate = False
         for existing_match in filtered_matches:
-            existing_key, existing_x, existing_y = existing_match
+            existing_key, existing_x, _, _ = existing_match
             if (key_name == existing_key and 
-                abs(x - existing_x) <= merge_distance and 
-                abs(y - existing_y) <= merge_distance):
+                abs(x - existing_x) <= merge_distance):
+
                 is_duplicate = True
                 break
         
         if not is_duplicate:
             filtered_matches.append(match)
     
-    return filtered_matches.sort(key=lambda x: x[1]) 
+    filtered_matches.sort(key=lambda x: x[1])
+    return filtered_matches 
 
 
 def hsv_color_match(image: np.ndarray, lower_hsv: np.ndarray, upper_hsv: np.ndarray, threshold: float = 0.05) -> List[Tuple[int, int, float]]:
@@ -109,12 +117,13 @@ def hsv_color_match(image: np.ndarray, lower_hsv: np.ndarray, upper_hsv: np.ndar
     :return: 匹配结果列表 [(x, y, confidence), ...]
     """
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    # lower_blue = np.array([100, 50, 50])
-    # upper_blue = np.array([130, 255, 255])
     mask = cv2.inRange(hsv, lower_hsv, upper_hsv)
 
     hsv_pixels = cv2.countNonZero(mask)
     total_pixels = image.shape[0] * image.shape[1]
     hsv_ratio = hsv_pixels / total_pixels
+    print(f"HSV颜色匹配比例: {hsv_ratio}")
+    print(f"HSV匹配像素: {hsv_pixels}")
+    print(f"HSV总像素: {total_pixels}")
 
     return hsv_ratio > threshold

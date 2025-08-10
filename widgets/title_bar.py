@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttk
 from PIL import ImageTk, Image
 from ttkbootstrap.constants import *
-from utils.path import root_path
+from utils import root_path
 
 class TitleBar(tk.Frame):
     def __init__(self, master=None, container=None, close_callback=None):
@@ -38,7 +38,7 @@ class TitleBar(tk.Frame):
         self.title_label = ttk.Label(
             self.title_bar,
             text="钓鱼助手",
-            font=('微软雅黑', 14), 
+            font=('微软雅黑'), 
             anchor=tk.CENTER
         )
         # 为标题文字绑定拖拽事件

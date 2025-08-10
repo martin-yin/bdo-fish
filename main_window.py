@@ -89,11 +89,8 @@ class MainPage(ttk.Frame):
 
 if __name__ == "__main__":
     app = ttk.Window("", "darkly")
-    app.geometry("280x130")  # 增加高度以适应状态显示
     app.overrideredirect(True) 
-    font_size = int(12)  # 稍微减小字体以适应更多内容
     default_font = tk_font.nametofont("TkDefaultFont")
-    default_font.configure(size=font_size)
     app.attributes('-topmost', True)
     MainPage(app)
     app.mainloop()
