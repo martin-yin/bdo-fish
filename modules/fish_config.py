@@ -24,12 +24,12 @@ def load_fish_config(server: str):
                 "width": 436,
                 "height": 70
             },
-            "fish_point": {
+            "fish_point": [{
                 "left": 1411,
                 "top": 511,
                 "width": 1,
                 "height": 1
-            },
+            }],
         },
         "na": {
                 "monitoring": {
@@ -50,12 +50,12 @@ def load_fish_config(server: str):
                 "width": 436,
                 "height": 70
             },
-            "fish_point": {
+            "fish_point": [{
                 "left": 1411,
                 "top": 511,
                 "width": 1,
                 "height": 1
-            },
+            }],
         }
     }
     return fish_config[server]
@@ -71,7 +71,6 @@ def load_templates(server, type):
             template_path = os.path.join(template_dir, file)
             template = imread(template_path, COLOR_BGR2GRAY)
             if template is not None:
-                # 去掉文件扩展名作为键名
                 key_name = os.path.splitext(file)[0]
                 templates[key_name] = template
                 print(f"已加载状态模板: {key_name}, 尺寸: {template.shape}")
