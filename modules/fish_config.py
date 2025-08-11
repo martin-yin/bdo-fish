@@ -29,6 +29,21 @@ def load_fish_config(server: str):
                 "top": 511,
                 "width": 1,
                 "height": 1
+            },{
+                "left": 1464,
+                "top": 511,
+                "width": 1,
+                "height": 1
+            },{
+                "left": 1518,
+                "top": 511,
+                "width": 1,
+                "height": 1
+            },{
+                "left": 1572,
+                "top": 511,
+                "width": 1,
+                "height": 1
             }],
         },
         "na": {

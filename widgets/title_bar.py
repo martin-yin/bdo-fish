@@ -2,7 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttk
 from PIL import ImageTk, Image
 from ttkbootstrap.constants import *
-from utils import root_path
+from utils import root_path, global_settings
 
 class TitleBar(tk.Frame):
     def __init__(self, master=None, container=None, close_callback=None):
@@ -10,7 +10,7 @@ class TitleBar(tk.Frame):
         self.master = master
         self.container = container
         self.close_callback = close_callback
-        self.save_timer = None  # 用于延迟保存的定时器
+        self.master.geometry(f'+{global_settings["pos"]["x"]}+{global_settings["pos"]["y"]}')
         self.create_widgets()
 
     def create_widgets(self):
@@ -31,14 +31,10 @@ class TitleBar(tk.Frame):
             self.title_bar,
             image=self.logo_icon_photo,
         )
-        # 为 logo 绑定拖拽事件
-        self.logo_label.bind('<Button-1>', self.clickwin)
-        self.logo_label.bind('<B1-Motion>', self.dragwin)
-        self.logo_label.bind('<ButtonRelease-1>', self.on_drag_end)
+
 
         self.title_bar.bind('<Button-1>', self.clickwin)
         self.title_bar.bind('<B1-Motion>', self.dragwin)
-        self.title_bar.bind('<ButtonRelease-1>', self.on_drag_end)
         self.title_label = ttk.Label(
             self.title_bar,
             text="钓鱼助手",
@@ -46,7 +42,6 @@ class TitleBar(tk.Frame):
         # 为标题文字绑定拖拽事件
         self.title_label.bind('<Button-1>', self.clickwin)
         self.title_label.bind('<B1-Motion>', self.dragwin)
-        self.title_label.bind('<ButtonRelease-1>', self.on_drag_end)
         
         self.close_label = ttk.Label(
             self.title_bar,
@@ -62,7 +57,6 @@ class TitleBar(tk.Frame):
         # 为空白区域绑定拖拽事件
         spacer.bind('<Button-1>', self.clickwin)
         spacer.bind('<B1-Motion>', self.dragwin)
-        spacer.bind('<ButtonRelease-1>', self.on_drag_end)
         spacer.pack(fill=X, expand=True)
 
     def clickwin(self, event):
@@ -74,18 +68,8 @@ class TitleBar(tk.Frame):
         x = self.master.winfo_pointerx() - self._offsetx
         y = self.master.winfo_pointery() - self._offsety
         self.master.geometry(f'+{x}+{y}')
-        # 延迟保存位置，避免拖拽过程中频繁保存
-        self.schedule_save_position(x, y)
-    
-    def on_drag_end(self, event):
-        """拖拽结束时立即保存位置"""
-        self.save_current_position()
-    
-    def schedule_save_position(self, x, y):
-        """延迟保存位置，避免频繁保存"""
-        if self.save_timer:
-            self.master.after_cancel(self.save_timer)
-        self.save_timer = self.master.after(500, lambda: self.save_window_position(x, y))
+        global_settings['pos']['x'] = x
+        global_settings['pos']['y'] = y
 
     def on_close_click(self, event):
         if self.close_callback is not None:

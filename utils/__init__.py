@@ -2,12 +2,76 @@ from cv2 import cvtColor, COLOR_BGR2GRAY, TM_CCOEFF_NORMED, matchTemplate, inRan
 import numpy as np
 from typing import List, Tuple, Dict, Optional
 import os
+import pickle
+from pickle import dump, load
+from pathlib import Path
+
+global_settings = {
+    "server": "na",
+    "rod": "巴雷诺斯鱼竿",
+    "fish": {
+        "green": False,
+        "blue": False,
+        "yellow": True,
+    },
+    "pos": {
+        "x": 100,
+        "y": 100,
+    }
+}
+
+def get_appdata_path(app_name):
+    """获取应用数据目录路径"""
+    if os.name == 'nt':  # Windows
+        appdata = os.environ.get('APPDATA')
+        if appdata:
+            app_dir = Path(appdata) / app_name
+        else:
+            app_dir = Path.home() / 'AppData' / 'Roaming' / app_name
+    else:
+        app_dir = Path.home() / f'.{app_name}'
+    
+    app_dir.mkdir(parents=True, exist_ok=True)
+    return app_dir
 
 def root_path():
     current_path = os.path.dirname(os.path.abspath(__file__))
     root_path = os.path.dirname(current_path)
     return root_path
 
+def save_settings(settings, filename='settings.pkl'):
+    """Save settings to a file in %APPDATA% using pickle"""
+    global global_settings
+    global_settings = settings
+    appdata_dir = get_appdata_path("bdo-fish")
+    settings_file = appdata_dir / filename
+    with open(settings_file, 'wb') as file:
+        dump(settings, file)
+
+def load_settings(filename='settings.pkl'):
+    global global_settings
+    try:
+        appdata_dir = get_appdata_path("bdo-fish")
+        settings_file = appdata_dir / filename
+        if settings_file.exists():
+            with open(settings_file, 'rb') as file:
+                loaded_settings = load(file)
+                global_settings.update(loaded_settings)  # 更新全局设置
+        else:
+            print(f"Settings file does not exist: {settings_file}, using default settings")
+    
+    except PermissionError:
+        print(f"Permission denied when trying to access: {settings_file}")
+    except FileNotFoundError:
+        print(f"Could not find the file: {settings_file}")
+    except EOFError:
+        print(f"The settings file appears to be empty or corrupted: {settings_file}")
+    except pickle.UnpicklingError:
+        print(f"The settings file is not a valid pickle file: {settings_file}")
+    except Exception as e:
+        print(f"An unexpected error occurred while loading settings: {e}")
+    
+    return global_settings
 
 # 单图匹配
 def match_template(image: np.ndarray, template: np.ndarray, threshold: float = 0.8) -> List[Tuple[int, int, float]]:

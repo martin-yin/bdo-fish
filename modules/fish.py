@@ -93,6 +93,31 @@ class Fish:
             print(f"捕获鱼点像素失败: {e}")
             return None
 
+    def capture_fullscreen(self):
+        """捕获全屏截图"""
+        try:
+            with mss.mss() as sct:
+                # 获取主显示器
+                monitor = sct.monitors[1]
+                
+                # 截取全屏
+                screenshot = sct.grab(monitor)
+                
+                # 转换为numpy数组
+                img_array = np.array(screenshot)
+                
+                # 生成时间戳文件名
+                timestamp = time.strftime("%Y%m%d_%H%M%S")
+                filename = f"fullscreen_{timestamp}.png"
+                
+                # 保存截图
+                import cv2
+                cv2.imwrite(filename, cv2.cvtColor(img_array, cv2.COLOR_BGRA2BGR))
+                print(f"全屏截图已保存: {filename}")
+                
+        except Exception as e:
+            print(f"全屏截图失败: {e}")
+
     def check_fish_pix_color(self, pixel_rgb_list):
         """检测鱼点像素是否在指定的HSV颜色范围内"""
         if pixel_rgb_list is None:
@@ -119,13 +144,9 @@ class Fish:
                 print(f"鱼点{i+1}检测到绿色鱼 - HSV值: {hsv_pixel}")
                 green_count += 1
             # 检测是否在蓝色范围内
-            elif inRange(np.array([[hsv_pixel]]), blue_lower, blue_upper)[0][0] > 0:
+            if inRange(np.array([[hsv_pixel]]), blue_lower, blue_upper)[0][0] > 0:
                 print(f"鱼点{i+1}检测到蓝色鱼 - HSV值: {hsv_pixel}")
                 blue_count += 1
-            else:
-                print(f"鱼点{i+1}检测到其他颜色 - HSV值: {hsv_pixel}")
-                # 只要有一个不是蓝色或绿色，就返回 other
-                return "other"
 
         # 如果绿和蓝鱼总和大于或等于总共要坚持的位置数量，则说明100%没上来其他鱼。
         green_blue_count = green_count + blue_count
@@ -226,6 +247,7 @@ class Fish:
             time.sleep(1)
         # 捕获鱼点像素并检测颜色
         fish_color = self.check_fish_pix_color(self.capture_fish_point_pixel())
+        self.capture_fullscreen()
         
         if fish_color == "other":
             keyboard.press_and_release('r')
