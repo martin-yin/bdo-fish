@@ -10,10 +10,9 @@ import keyboard
 from cv2 import cvtColor, inRange, COLOR_RGB2BGR, COLOR_RGB2HSV
 
 class Fish:
-    def __init__(self, server):
+    def __init__(self, server, three_rod: bool, fish_class):
         self.is_running = False
-        print(server)
-        self.regions = load_fish_config(server)
+        self.fish_config = load_fish_config(three_rod, fish_class)
         self.monitoring_templates = load_templates(server, 'monitoring')
         self.key_qte_template = load_templates(server, 'key_qte')
         self.thread = None
@@ -39,7 +38,7 @@ class Fish:
             return True
 
     def capture_region(self, region_name: str):
-        region = self.regions[region_name]
+        region = self.fish_config[region_name]
         
         try:
             with mss.mss() as sct:
@@ -64,95 +63,36 @@ class Fish:
     def capture_fish_point_pixel(self):
         """捕获鱼点像素并返回RGB颜色值或RGB颜色值数组"""
         try:
-            fish_point_config = self.regions["fish_point"]
-            
-            # 检查是否为数组格式
-            if isinstance(fish_point_config, list):
-                # 处理数组格式，返回多个像素值
-                pixel_rgb_list = []
-                with mss.mss() as sct:
-                    for region in fish_point_config:
-                        screenshot = sct.grab(region)
-                        img = Image.frombytes('RGB', screenshot.size, screenshot.bgra, 'raw', 'BGRX')
-                        img_array = np.array(img)
-                        # 获取像素的RGB值 (取第一个像素，因为只截取了1x1的区域)
-                        pixel_rgb = img_array[0, 0]
-                        pixel_rgb_list.append(pixel_rgb)
-                return pixel_rgb_list
-            else:
-                # 处理单个区域格式，保持向后兼容
-                with mss.mss() as sct:
-                    screenshot = sct.grab(fish_point_config)
+            fish_color_point = self.fish_config["fish_color_point"]
+            pixel_rgb_list = []
+            with mss.mss() as sct:
+                for region in fish_color_point:
+                    screenshot = sct.grab(region)
                     img = Image.frombytes('RGB', screenshot.size, screenshot.bgra, 'raw', 'BGRX')
                     img_array = np.array(img)
                     # 获取像素的RGB值 (取第一个像素，因为只截取了1x1的区域)
                     pixel_rgb = img_array[0, 0]
-                    return pixel_rgb
+                    pixel_rgb_list.append(pixel_rgb)
+            return pixel_rgb_list
                 
         except Exception as e:
             print(f"捕获鱼点像素失败: {e}")
             return None
 
-    def capture_fullscreen(self):
-        """捕获全屏截图"""
-        try:
-            with mss.mss() as sct:
-                # 获取主显示器
-                monitor = sct.monitors[1]
-                
-                # 截取全屏
-                screenshot = sct.grab(monitor)
-                
-                # 转换为numpy数组
-                img_array = np.array(screenshot)
-                
-                # 生成时间戳文件名
-                timestamp = time.strftime("%Y%m%d_%H%M%S")
-                filename = f"fullscreen_{timestamp}.png"
-                
-                # 保存截图
-                import cv2
-                cv2.imwrite(filename, cv2.cvtColor(img_array, cv2.COLOR_BGRA2BGR))
-                print(f"全屏截图已保存: {filename}")
-                
-        except Exception as e:
-            print(f"全屏截图失败: {e}")
-
     def check_fish_pix_color(self, pixel_rgb_list):
         """检测鱼点像素是否在指定的HSV颜色范围内"""
         if pixel_rgb_list is None:
-            return "other"
-        
-        # 绿色鱼的HSV范围
-        green_lower = np.array([40, 90, 90])
-        green_upper = np.array([80, 255, 255])
-        
-        # 蓝色鱼的HSV范围
-        blue_lower = np.array([100, 130, 130])
-        blue_upper = np.array([110, 255, 255])
-        
-        green_count = 0
-        blue_count = 0
-        
-        for i, pixel in enumerate(pixel_rgb_list):
-            # 将RGB转换为HSV
-            rgb_pixel = np.uint8([[pixel]])
-            hsv_pixel = cvtColor(rgb_pixel, COLOR_RGB2HSV)[0][0]
-            
-            # 检测是否在绿色范围内
-            if inRange(np.array([[hsv_pixel]]), green_lower, green_upper)[0][0] > 0:
-                print(f"鱼点{i+1}检测到绿色鱼 - HSV值: {hsv_pixel}")
-                green_count += 1
-            # 检测是否在蓝色范围内
-            if inRange(np.array([[hsv_pixel]]), blue_lower, blue_upper)[0][0] > 0:
-                print(f"鱼点{i+1}检测到蓝色鱼 - HSV值: {hsv_pixel}")
-                blue_count += 1
+            return None
 
-        # 如果绿和蓝鱼总和大于或等于总共要坚持的位置数量，则说明100%没上来其他鱼。
-        green_blue_count = green_count + blue_count
-        if green_blue_count == len(pixel_rgb_list) or green_blue_count > len(pixel_rgb_list):
-            return "green"
-        return "other"
+        fish_hsv = self.fish_config["fish_hsv"]
+
+        for pixel in pixel_rgb_list:
+            for color_name, color_range in fish_hsv.items():
+                rgb_pixel = np.uint8([[pixel]])
+                hsv_pixel = cvtColor(rgb_pixel, COLOR_RGB2HSV)[0][0]
+                if inRange(np.array([[hsv_pixel]]), np.array(color_range["lower"]), np.array(color_range["upper"]))[0][0] > 0:
+                    return True  # 直接跳出所有循环
+        return None  # 循环结束后未找到匹配颜色
 
     def _run(self):
         """钓鱼主循环"""
@@ -246,10 +186,8 @@ class Fish:
             print("没有需要输入的按键，等待1秒后按下R")
             time.sleep(1)
         # 捕获鱼点像素并检测颜色
-        fish_color = self.check_fish_pix_color(self.capture_fish_point_pixel())
-        self.capture_fullscreen()
-        
-        if fish_color == "other":
+        isInFishHsv = self.check_fish_pix_color(self.capture_fish_point_pixel())
+        if isInFishHsv != None:
             keyboard.press_and_release('r')
             print("按下R键")
             self.current_state = "monitoring"

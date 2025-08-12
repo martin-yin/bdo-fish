@@ -44,8 +44,8 @@ class MainPage(ttk.Frame):
                 self.server_var.set(global_settings['server'])
             
             # 应用鱼竿选择
-            if 'rod' in global_settings:
-                self.rod_var.set(global_settings['rod'])
+            if 'three_rod' in global_settings:
+                self.three_rod_var.set(global_settings['three_rod'])
             
             # 应用鱼类选择
             if 'fish' in global_settings:
@@ -63,7 +63,7 @@ class MainPage(ttk.Frame):
         """保存当前界面设置到配置文件"""
         current_settings = {
             'server': self.server_var.get(),
-            'rod': self.rod_var.get(),
+            'three_rod': self.three_rod_var.get(),
             'fish': {
                 'green': self.green_fish_var.get(),
                 'blue': self.blue_fish_var.get(),
@@ -80,7 +80,7 @@ class MainPage(ttk.Frame):
         server_frame = ttk.Frame(parent)
         server_frame.pack(fill=X, pady=(0, 10))
         
-        server_label = ttk.Label(server_frame, text="服务器：",  width=6)
+        server_label = ttk.Label(server_frame, text="服务器：",  width=10)
         server_label.pack(side=LEFT)
         
         self.server_var = tk.StringVar(value="tw")
@@ -93,7 +93,7 @@ class MainPage(ttk.Frame):
     def create_fish_choice(self, parent):
         fish_frame = ttk.Frame(parent)
         fish_frame.pack(fill=X, pady=(0, 10))
-        fish_label = ttk.Label(fish_frame, text="鱼：", width=6)
+        fish_label = ttk.Label(fish_frame, text="需要的鱼类：", width=10)
         fish_label.pack(side=LEFT)
         self.green_fish_var = tk.BooleanVar(value=False)
         self.blue_fish_var = tk.BooleanVar(value=False)
@@ -105,28 +105,25 @@ class MainPage(ttk.Frame):
         yellow_check = ttk.Checkbutton(fish_frame, text="黄鱼", variable=self.yellow_fish_var)
         yellow_check.pack(side=LEFT, padx=(10, 5))
 
-    def get_selected_fish(self):
+    def get_fish_class(self):
         """获取选中的鱼类列表"""
-        selected_fish = []
+        fish_class = []
         if self.green_fish_var.get():
-            selected_fish.append("green")
+            fish_class.append("green")
         if self.blue_fish_var.get():
-            selected_fish.append("blue")
+            fish_class.append("blue")
         if self.yellow_fish_var.get():
-            selected_fish.append("yellow")
-        return selected_fish
+            fish_class.append("yellow")
+        return fish_class
 
     def create_rod(self, parent):
         rod_frame = ttk.Frame(parent)
         rod_frame.pack(fill=X, pady=(0, 10))
-        rod_label = ttk.Label(rod_frame, text="鱼竿：", width=6)
+        rod_label = ttk.Label(rod_frame, text="当前鱼竿：", width=10)
         rod_label.pack(side=LEFT)
-        
-        # 鱼竿下拉框选择
-        self.rod_var = tk.StringVar(value="巴洛斯钓竿")
-        rod_options = ["巴雷诺斯鱼竿", "凉风鱼竿", "梅迪亚鱼竿"]
-        rod_combobox = ttk.Combobox(rod_frame, textvariable=self.rod_var, values=rod_options, state="readonly", width=15)
-        rod_combobox.pack(side=LEFT, padx=(10, 5))
+        self.three_rod_var = tk.BooleanVar(value=False)
+        three_rod_check = ttk.Checkbutton(rod_frame, text="三浮竿/凉风竿", variable=self.three_rod_var)
+        three_rod_check.pack(side=LEFT, padx=(10, 5))
 
     def toggle_fishing(self):
         """切换钓鱼状态"""
@@ -137,15 +134,15 @@ class MainPage(ttk.Frame):
     
     def start_fishing(self):
         """开始钓鱼"""
-        selected_server = self.server_var.get()
-        self.fish = Fish(selected_server)
+        server = self.server_var.get()
+        self.fish = Fish(server, self.three_rod_var.get(), self.get_fish_class())
+
         
         if self.fish.start():
             self.is_fishing = True
             self.control_button.config(text="停止钓鱼", style="danger.TButton")
             # 开始状态检查
             self.check_status()
-            print(f"开始在 {selected_server} 钓鱼")
 
     def stop_fishing(self):
         """停止钓鱼"""

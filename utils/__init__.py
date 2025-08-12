@@ -8,7 +8,7 @@ from pathlib import Path
 
 global_settings = {
     "server": "na",
-    "rod": "巴雷诺斯鱼竿",
+    "three_rod": False,
     "fish": {
         "green": False,
         "blue": False,
