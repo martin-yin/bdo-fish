@@ -5,6 +5,7 @@ from ttkbootstrap.constants import *
 from modules.fish import Fish
 from widgets.title_bar import TitleBar
 from utils import load_settings, global_settings, save_settings
+from widgets.multi_area_mask import CTkMultiAreaMask
 
 class MainPage(ttk.Frame):
     def __init__(self, master=None, parent=None):
@@ -27,11 +28,20 @@ class MainPage(ttk.Frame):
         # 控制按钮
         self.control_button = ttk.Button(self.form_widgets, text="开始钓鱼", 
                                         command=self.toggle_fishing, style="success.TButton")
-        self.control_button.pack(fill=X, pady=(0, 0), ipady=0)
+        self.control_button.pack(fill=X, pady=(0, 5), ipady=0)
+        
+        # 蒙版控制按钮
+        self.mask_button = ttk.Button(self.form_widgets, text="显示区域蒙版", 
+                                     command=self.show_area_mask, style="info.TButton")
+        self.mask_button.pack(fill=X, pady=(0, 0), ipady=0)
         
         # 初始化钓鱼对象
         self.fish = None
         self.is_fishing = False
+        
+        # 初始化蒙版对象
+        self.area_mask = CTkMultiAreaMask()
+        self.setup_default_areas()
         
         # 加载配置并应用到界面
         self.load_and_apply_settings()
@@ -164,13 +174,36 @@ class MainPage(ttk.Frame):
             self.master.after(1000, self.check_status)
 
     
+    def setup_default_areas(self):
+        """设置默认的监控区域"""
+        # 从fish_config中获取默认区域坐标
+        default_areas = [
+            (730, 48, 430, 42),    # monitoring区域
+            (1014, 378, 134, 17),  # blue_qte区域
+            (740, 340, 436, 70),   # key_qte区域
+            (1411, 621, 1, 1),     # fish_color_point区域
+        ]
+        self.area_mask.set_areas(default_areas)
+    
+    def show_area_mask(self):
+        """显示区域蒙版"""
+        try:
+            self.area_mask.create_mask_overlay()
+        except Exception as e:
+            print(f"显示蒙版时出错: {e}")
+    
     def on_close(self):
         """关闭窗口时的清理工作"""
         # 保存当前设置
         self.save_current_settings()
         
+        # 停止钓鱼
         if self.fish and self.is_fishing:
             self.fish.stop()
+        
+        # 关闭蒙版（如果打开的话）
+        if hasattr(self, 'area_mask') and self.area_mask.is_mask_active():
+            self.area_mask.close_mask()
         
         self.master.destroy()
         self.master.quit()
