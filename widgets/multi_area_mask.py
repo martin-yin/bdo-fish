@@ -70,11 +70,6 @@ class CTkMultiAreaMask:
         self.win.bind('<Escape>', lambda e: self.close_mask())
         self.win.bind('<F5>', lambda e: self._draw_areas())
         
-        # 显示提示信息
-        info_text = f"显示 {len(self.areas)} 个区域 | 按ESC或点击关闭按钮退出 | F5刷新"
-        self.canvas.create_text(width//2, 30, text=info_text, fill='white', 
-                               font=('Arial', 14, 'bold'), tags="info")
-        
         self.win.mainloop()
         
     def _calculate_scale(self):
@@ -113,18 +108,11 @@ class CTkMultiAreaMask:
                 outline='red', width=3, fill='', tags="area"
             )
             
-            # 添加区域标签
-            label_text = f"区域{i+1}\n({x},{y})\n{width}x{height}"
-            self.canvas.create_text(
-                display_x + display_width//2, display_y + display_height//2,
-                text=label_text, fill='yellow', font=('Arial', 10, 'bold'),
-                tags="area"
-            )
             
             # 添加区域编号
             self.canvas.create_text(
-                display_x + 10, display_y + 10,
-                text=str(i+1), fill='white', font=('Arial', 16, 'bold'),
+                display_x - 10, display_y - 10,
+                text=str(i+1), fill='white',
                 tags="area"
             )
             
