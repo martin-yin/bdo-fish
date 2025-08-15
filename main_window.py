@@ -30,8 +30,8 @@ class MainPage(ttk.Frame):
                                         command=self.toggle_fishing, style="success.TButton")
         self.control_button.pack(fill=X, pady=(0, 5), ipady=0)
         
-        # 蒙版控制按钮
-        self.mask_button = ttk.Button(self.form_widgets, text="显示区域蒙版", 
+        # 截图控制按钮
+        self.mask_button = ttk.Button(self.form_widgets, text="显示截图区域", 
                                      command=self.show_area_mask, style="info.TButton")
         self.mask_button.pack(fill=X, pady=(0, 0), ipady=0)
         
@@ -39,7 +39,7 @@ class MainPage(ttk.Frame):
         self.fish = None
         self.is_fishing = False
         
-        # 初始化蒙版对象
+        # 初始化截图对象
         self.area_mask = CTkMultiAreaMask()
         self.setup_default_areas()
         
@@ -186,11 +186,11 @@ class MainPage(ttk.Frame):
         self.area_mask.set_areas(default_areas)
     
     def show_area_mask(self):
-        """显示区域蒙版"""
+        """显示截图区域"""
         try:
             self.area_mask.create_mask_overlay()
         except Exception as e:
-            print(f"显示蒙版时出错: {e}")
+            print(f"显示截图时出错: {e}")
     
     def on_close(self):
         """关闭窗口时的清理工作"""
@@ -201,7 +201,7 @@ class MainPage(ttk.Frame):
         if self.fish and self.is_fishing:
             self.fish.stop()
         
-        # 关闭蒙版（如果打开的话）
+        # 关闭截图（如果打开的话）
         if hasattr(self, 'area_mask') and self.area_mask.is_mask_active():
             self.area_mask.close_mask()
         

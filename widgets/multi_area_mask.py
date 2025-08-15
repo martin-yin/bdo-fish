@@ -22,14 +22,14 @@ class CTkMultiAreaMask:
         self.areas.clear()
         
     def create_mask_overlay(self):
-        """创建蒙版覆盖层，显示所有指定的区域"""
+        """创建截图覆盖层，显示所有指定的区域"""
         if not self.areas:
             print("没有设置任何区域坐标")
             return
             
         # 初始化临时窗口
         self.win = tk.Tk()
-        self.win.title("区域蒙版")
+        self.win.title("区域截图")
         self.win.attributes("-alpha", 0.7)  # 设置窗口半透明
         self.win.attributes("-fullscreen", True)  # 设置全屏
         self.win.attributes("-topmost", True)  # 设置窗口在最上层
@@ -58,7 +58,7 @@ class CTkMultiAreaMask:
         button_frame.pack(side='bottom', pady=10)
         
         # 添加控制按钮
-        close_btn = Button(button_frame, text="关闭蒙版", command=self.close_mask, 
+        close_btn = Button(button_frame, text="关闭截图", command=self.close_mask, 
                           bg='red', fg='white', font=('Arial', 12, 'bold'))
         close_btn.pack(side='left', padx=5)
         
@@ -117,7 +117,7 @@ class CTkMultiAreaMask:
             )
             
     def close_mask(self):
-        """关闭蒙版窗口"""
+        """关闭截图窗口"""
         if self.win:
             self.win.quit()
             self.win.destroy()
@@ -125,13 +125,13 @@ class CTkMultiAreaMask:
             self.canvas = None
             
     def is_mask_active(self):
-        """检查蒙版是否处于活动状态"""
+        """检查截图是否处于活动状态"""
         return self.win is not None and self.win.winfo_exists()
 
 
 # 使用示例
 if __name__ == "__main__":
-    # 创建蒙版实例
+    # 创建截图实例
     mask = CTkMultiAreaMask()
     
     # 添加多个区域坐标 (x, y, width, height)
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     
     # 创建主控制窗口
     root = tk.Tk()
-    root.title("蒙版控制器")
+    root.title("截图控制器")
     root.geometry("300x200")
     
     def show_mask():
@@ -168,7 +168,7 @@ if __name__ == "__main__":
         area_count_label.config(text=f"当前区域数量: {len(mask.areas)}")
     
     # 创建控制按钮
-    Button(root, text="显示蒙版", command=show_mask, bg='green', fg='white', 
+    Button(root, text="显示截图", command=show_mask, bg='green', fg='white', 
            font=('Arial', 12, 'bold')).pack(pady=10)
     
     Button(root, text="添加随机区域", command=add_new_area, bg='blue', fg='white',
