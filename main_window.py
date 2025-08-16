@@ -6,6 +6,9 @@ from modules.fish import Fish
 from widgets.title_bar import TitleBar
 from utils import load_settings, global_settings, save_settings
 from widgets.multi_area_mask import CTkMultiAreaMask
+import webbrowser
+from PIL import Image, ImageTk
+import os
 
 class MainPage(ttk.Frame):
     def __init__(self, master=None, parent=None):
@@ -21,29 +24,29 @@ class MainPage(ttk.Frame):
 
         self.form_widgets = ttk.Frame(self)
         self.form_widgets.pack(fill=BOTH, expand=YES, padx=12, pady=(0, 12))
-        # 服务器选择区域
         self.create_server(self.form_widgets)
         self.create_rod(self.form_widgets)
         self.create_fish_choice(self.form_widgets)
-        # 控制按钮
         self.control_button = ttk.Button(self.form_widgets, text="开始钓鱼", 
                                         command=self.toggle_fishing, style="success.TButton")
         self.control_button.pack(fill=X, pady=(0, 5), ipady=0)
         
-        # 截图控制按钮
         self.mask_button = ttk.Button(self.form_widgets, text="显示截图区域", 
                                      command=self.show_area_mask, style="info.TButton")
-        self.mask_button.pack(fill=X, pady=(0, 0), ipady=0)
+        self.mask_button.pack(fill=X, pady=(0, 5), ipady=0)
         
-        # 初始化钓鱼对象
+        info_frame = ttk.Frame(self.form_widgets)
+        info_frame.pack(fill=X, pady=(0, 0))
+        
+        info_label = ttk.Label(info_frame, text="该工具永久免费，交流群：939447624", foreground="gray")
+        info_label.pack(side=LEFT)
+        
         self.fish = None
         self.is_fishing = False
         
-        # 初始化截图对象
         self.area_mask = CTkMultiAreaMask()
         self.setup_default_areas()
         
-        # 加载配置并应用到界面
         self.load_and_apply_settings()
     
     def load_and_apply_settings(self):
@@ -199,6 +202,13 @@ class MainPage(ttk.Frame):
             self.area_mask.create_mask_overlay()
         except Exception as e:
             print(f"显示截图时出错: {e}")
+    
+    def open_github(self):
+        """打开GitHub仓库"""
+        try:
+            webbrowser.open("https://github.com/martin-yin/bdo-fish")
+        except Exception as e:
+            print(f"打开GitHub链接失败: {e}")
     
     def on_close(self):
         """关闭窗口时的清理工作"""
