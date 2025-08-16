@@ -66,6 +66,9 @@ class MainPage(ttk.Frame):
                     self.blue_fish_var.set(fish_settings['blue'])
                 if 'yellow' in fish_settings:
                      self.yellow_fish_var.set(fish_settings['yellow'])
+                if 'red' in fish_settings:
+                    self.red_fish_var.set(fish_settings['red'])
+
         else:
             print("No settings found, using defaults")
     
@@ -77,7 +80,8 @@ class MainPage(ttk.Frame):
             'fish': {
                 'green': self.green_fish_var.get(),
                 'blue': self.blue_fish_var.get(),
-                'yellow': self.yellow_fish_var.get()
+                'yellow': self.yellow_fish_var.get(),
+                'red': self.red_fish_var.get()
             },
             'pos': {
                 'x': self.master.winfo_x(),
@@ -108,12 +112,15 @@ class MainPage(ttk.Frame):
         self.green_fish_var = tk.BooleanVar(value=False)
         self.blue_fish_var = tk.BooleanVar(value=False)
         self.yellow_fish_var = tk.BooleanVar(value=True)
+        self.red_fish_var = tk.BooleanVar(value=True)
         green_check = ttk.Checkbutton(fish_frame, text="绿鱼", variable=self.green_fish_var)
         green_check.pack(side=LEFT, padx=(10, 5))
         blue_check = ttk.Checkbutton(fish_frame, text="蓝鱼", variable=self.blue_fish_var)
         blue_check.pack(side=LEFT, padx=(10, 5))
         yellow_check = ttk.Checkbutton(fish_frame, text="黄鱼", variable=self.yellow_fish_var)
         yellow_check.pack(side=LEFT, padx=(10, 5))
+        red_check = ttk.Checkbutton(fish_frame, text="红鱼", variable=self.red_fish_var, state="disabled")
+        red_check.pack(side=LEFT, padx=(10, 5))
 
     def get_fish_class(self):
         """获取选中的鱼类列表"""
@@ -124,6 +131,7 @@ class MainPage(ttk.Frame):
             fish_class.append("blue")
         if self.yellow_fish_var.get():
             fish_class.append("yellow")
+        fish_class.append("red")
         return fish_class
 
     def create_rod(self, parent):

@@ -17,6 +17,8 @@ class Fish:
         self.key_qte_template = load_templates(server, 'key_qte')
         self.thread = None
         self.current_state = "monitoring"
+        self.fishing_detection_count = 0  # 拉扯状态检测次数计数器
+        self.max_fishing_detection = 100  # 最大检测次数
 
     def get_status(self):
         return "运行中" if self.is_running else "已停止"
@@ -124,6 +126,7 @@ class Fish:
             print("等待1.5秒进入拉扯状态……")
             time.sleep(1.5)
             self.current_state = "blue_qte"
+            self.fishing_detection_count = 0  # 重置拉扯状态检测计数器
             print("切换到拉扯检测模式")
             return "continue"
         
@@ -145,22 +148,47 @@ class Fish:
         """处理拉扯状态"""
         try:
             if fishing_image is None:
+                self.fishing_detection_count += 1
+                if self.fishing_detection_count >= self.max_fishing_detection:
+                    print(f"拉扯状态检测失败次数达到{self.max_fishing_detection}次，返回监控状态")
+                    self.current_state = "monitoring"
+                    self.fishing_detection_count = 0  # 重置计数器
+                    return "continue"
                 time.sleep(0.1)
                 return "continue"
+            
             blue_detected = hsv_color_match(fishing_image, np.array([100, 130, 130]), np.array([110, 255, 255]))
             print(f"蓝色检测结果: {blue_detected}")
+            
             if blue_detected: 
                 keyboard.press_and_release('space')
                 print("等待2.2秒进入按键输入状态...")
                 time.sleep(2.2)
                 self.current_state = "key_qte"
+                self.fishing_detection_count = 0  # 检测成功，重置计数器
                 return "continue"
             else:
-                print("没有检测到结果")
+                self.fishing_detection_count += 1
+                print(f"没有检测到结果，当前检测次数: {self.fishing_detection_count}/{self.max_fishing_detection}")
+                
+                if self.fishing_detection_count >= self.max_fishing_detection:
+                    print(f"拉扯状态检测失败次数达到{self.max_fishing_detection}次，返回监控状态")
+                    self.current_state = "monitoring"
+                    self.fishing_detection_count = 0  # 重置计数器
+                    return "continue"
+                
                 time.sleep(0.05)
                 return "continue"
         except Exception as e:
-            print(f"蓝色检测失败: {e}")
+            self.fishing_detection_count += 1
+            print(f"蓝色检测失败: {e}，当前检测次数: {self.fishing_detection_count}/{self.max_fishing_detection}")
+            
+            if self.fishing_detection_count >= self.max_fishing_detection:
+                print(f"拉扯状态检测失败次数达到{self.max_fishing_detection}次，返回监控状态")
+                self.current_state = "monitoring"
+                self.fishing_detection_count = 0  # 重置计数器
+                return "continue"
+            
             time.sleep(0.1)
             return "continue"
 
