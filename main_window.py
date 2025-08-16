@@ -7,8 +7,7 @@ from widgets.title_bar import TitleBar
 from utils import load_settings, global_settings, save_settings
 from widgets.multi_area_mask import CTkMultiAreaMask
 import webbrowser
-from PIL import Image, ImageTk
-import os
+from PIL import Image
 
 class MainPage(ttk.Frame):
     def __init__(self, master=None, parent=None):
